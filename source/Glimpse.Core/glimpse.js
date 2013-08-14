@@ -272,7 +272,7 @@ glimpse.util = (function($) {
             localStorage.setItem(key, JSON.stringify(value)); 
         },
         htmlEncode: function (value) {
-            return !(value == null) ? value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+            return !(value == null) ? value.replace(/&/g, '&amp;').replace(/"/g, '&#x34;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
         },
         preserveWhitespace: function (value) {
             if (value != null && typeof value !== "string")
