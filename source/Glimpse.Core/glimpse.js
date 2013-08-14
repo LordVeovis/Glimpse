@@ -279,7 +279,7 @@ glimpse.util = (function($) {
                 value = value.toString();
             if (!value)
                 return '';
-            return value.replace(/\r\n/g, '<br />').replace(/\n/g, '<br />').replace(/\t/g, '&nbsp; &nbsp; ').replace(/  /g, '&nbsp; ');
+            return value.replace(/\r\n/g, '<br />').replace(/\n/g, '<br />').replace(/\t/g, '&#xa0; &#xa0; ').replace(/  /g, '&#xa0; ');
         },
         lengthJson: function (data) {
             var count = 0;
@@ -1642,7 +1642,7 @@ glimpse.render.engine.util.table = (function($) {
         }, 
         buildInfo = function(args) { 
             var metadata = data.currentMetadata(); 
-            args.panel.html('<div class="glimpse-info-title"><a href="http://getGlimpse.com/" target="_blank"><img border="0" src="' + util.uriTemplate(data.currentMetadata().resources.glimpse_logo) + '" /></a></div><div>v' + metadata.version + '</div><div class="glimpse-info-quote">"What Firebug is for the client, Glimpse is for the server"</div><div class="glimpse-info-more">Go to your Glimpse Config page <a href="' + util.uriTemplate(data.currentMetadata().resources.glimpse_config) + '" target="_blank">Glimpse.axd</a></div><div class="glimpse-info-more">For more info see <a href="http://getGlimpse.com" target="_blank">http://getGlimpse.com</a></div><div style="margin:1.5em 0 0.5em;">Created by <strong>Anthony van der Hoorn</strong> (<a href="http://twitter.com/anthony_vdh" target="_blank">@anthony_vdh</a>) and <strong>Nik Molnar</strong> (<a href="http://twitter.com/nikmd23" target="_blank">@nikmd23</a>) &nbsp; - &copy; getglimpse.com 2011</div><div>Have a <em>feature</em> request? <a href="http://getglimpse.uservoice.com" target="_blank">Submit the idea</a>. &nbsp; &nbsp;Found an <em>error</em>? <a href="https://github.com/glimpse/glimpse/issues" target="_blank">Help us improve</a>. &nbsp; &nbsp;Have a <em>question</em>? <a href="http://twitter.com/#search?q=%23glimpse" target="_blank">Tweet us using #glimpse</a>. &nbsp; &nbsp;Want to <em>help</em>? <a href="groups.google.com/group/getglimpse-dev" target="_blank">Join our developer mailing list</a>.</div>');
+            args.panel.html('<div class="glimpse-info-title"><a href="http://getGlimpse.com/" target="_blank"><img border="0" src="' + util.uriTemplate(data.currentMetadata().resources.glimpse_logo) + '" /></a></div><div>v' + metadata.version + '</div><div class="glimpse-info-quote">"What Firebug is for the client, Glimpse is for the server"</div><div class="glimpse-info-more">Go to your Glimpse Config page <a href="' + util.uriTemplate(data.currentMetadata().resources.glimpse_config) + '" target="_blank">Glimpse.axd</a></div><div class="glimpse-info-more">For more info see <a href="http://getGlimpse.com" target="_blank">http://getGlimpse.com</a></div><div style="margin:1.5em 0 0.5em;">Created by <strong>Anthony van der Hoorn</strong> (<a href="http://twitter.com/anthony_vdh" target="_blank">@anthony_vdh</a>) and <strong>Nik Molnar</strong> (<a href="http://twitter.com/nikmd23" target="_blank">@nikmd23</a>) &#xa0; - &copy; getglimpse.com 2011</div><div>Have a <em>feature</em> request? <a href="http://getglimpse.uservoice.com" target="_blank">Submit the idea</a>. &#xa0; &#xa0;Found an <em>error</em>? <a href="https://github.com/glimpse/glimpse/issues" target="_blank">Help us improve</a>. &#xa0; &#xa0;Have a <em>question</em>? <a href="http://twitter.com/#search?q=%23glimpse" target="_blank">Tweet us using #glimpse</a>. &#xa0; &#xa0;Want to <em>help</em>? <a href="groups.google.com/group/getglimpse-dev" target="_blank">Join our developer mailing list</a>.</div>');
         },
         setupInfo = function(args) { 
             args.newData.data.info = { data: 'Loading...', suppressTab: true, isPermanent: true };
@@ -1752,7 +1752,7 @@ glimpse.render.engine.util.table = (function($) {
 (function($, pubsub, data, elements) {
     var renderLayout = function() {
             var requestData = data.currentData(),
-                name = requestData.clientId ? '"' + requestData.clientId + '"' : '&nbsp;';
+                name = requestData.clientId ? '"' + requestData.clientId + '"' : '&#xa0;';
 
             elements.titleHolder().find('.glimpse-snapshot-name').html(name);
             elements.titleHolder().find('.glimpse-uri').text(requestData.uri);
