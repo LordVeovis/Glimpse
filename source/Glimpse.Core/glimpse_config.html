@@ -263,7 +263,7 @@
             display: none;
         }
     </style>
-    <script type="text/javascript">
+    <script type="text/javascript">/*<![CDATA[*/
         var toggleClass = function (name) {
             toggleItems(document.getElementsByClassName(name));
         },
@@ -271,7 +271,7 @@
             toggleItems = function (e) { for (var i = 0; i < e.length; i++) { toggleItem(e[i]); } },
             toggleItem = function (e) { if (e.style.display == 'none') { e.style.display = ''; } else { e.style.display = 'none'; } };
 
-    </script>
+    /*]]>*/</script>
 </head>
     <body>
         <header>
@@ -317,7 +317,7 @@
             $endif$
 
             <!--Update notification-->
-            <script type="text/javascript">
+            <script type="text/javascript">/*<![CDATA[*/
                 var getOptions = function() { 
                     var data = localStorage.getItem('glimpseOptions'); 
                     return data != null ? JSON.parse(data) : {}; 
@@ -331,7 +331,7 @@
                 if (hasNewer && checkUri.indexOf('hash=' + currentHash) > -1) { 
                     document.write("<div class='out-dated'><h3>Really sorry to have to say this but you are out of date :(</h3>A new version of Glimpse is waiting for you... it's very lonely without you. It will be worth your while updating. <br /><a href='" + viewUri + "' target='new'>See what you are missing out on</a></div>");
                 }
-            </script>
+            /*]]>*/</script>
 
             <!--Configuration generator-->
             <div class="configuration-holder"><h3>Configuration Helper</h3>
@@ -422,7 +422,7 @@
             </div>
             <div class="side-bar">
                 <!--Cookie status on/off/other-->
-                <script type="text/javascript"> 
+                <script type="text/javascript">/*<![CDATA[*/
                     var getCookie = function(name) { 
                         var re = new RegExp(name + "=([^;]+)"); 
                         var value = re.exec(document.cookie); 
@@ -436,7 +436,7 @@
                     } else { 
                         document.write("<div class='notification notification-warn'><strong>Glimpse cookie set '" + policy + "'</strong> Looks like you are doing something custom. We don't have any specific buttons for your case, but if you ever want to just turn Glimpse On or Off simply use the above buttons.</div>");
                     }
-                </script>
+                /*]]>*/</script>
                 <!--Configuration help-->
                 <div class="more-help">
                     <h3>Configuration Help?</h3>
