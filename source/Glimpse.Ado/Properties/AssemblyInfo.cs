@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Glimpse.Core.Extensibility;
@@ -14,9 +15,10 @@ using Glimpse.Core.Extensibility;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("f2d6bd18-342c-4ae1-a63a-252265c5c16d")]
 
-[assembly: AssemblyVersion("1.5.0")]
-[assembly: AssemblyFileVersion("1.5.0")]
-[assembly: AssemblyInformationalVersion("1.5.0")] // Used to specify the NuGet version number at build time
+[assembly: AssemblyVersion("1.7.0")]
+[assembly: AssemblyFileVersion("1.7.0")]
+[assembly: AssemblyInformationalVersion("1.7.0")] // Used to specify the NuGet version number at build time
 
+[assembly: CLSCompliant(true)]
 [assembly: InternalsVisibleTo("Glimpse.Test.Ado")]
 [assembly: NuGetPackage("Glimpse.Ado")]

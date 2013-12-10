@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using Glimpse.AspNet.Extensions;
 using Glimpse.Core.Extensibility;
@@ -40,8 +41,18 @@ namespace Glimpse.AspNet
 
         internal HttpContextBase Context
         {
-            get { return context ?? new HttpContextWrapper(HttpContext.Current); }
+            get { return context ?? GetOrCaptureLogicalContext(); }
             set { context = value; }
+        }
+
+        private static HttpContextBase GetOrCaptureLogicalContext()
+        {
+            if (HttpContext.Current == null)
+                return CallContext.LogicalGetData("Glimpse.HttpContext") as HttpContextBase;
+
+            var wrapper = new HttpContextWrapper(HttpContext.Current);
+            CallContext.LogicalSetData("Glimpse.HttpContext", wrapper);
+            return wrapper;
         }
 
         private ILogger Logger { get; set; }
@@ -91,7 +102,7 @@ namespace Glimpse.AspNet
             try
             {
                 var response = Context.Response;
-                response.Filter = new PreBodyTagFilter(htmlSnippet, response.Filter, response.ContentEncoding, Logger);
+                response.Filter = new PreBodyTagFilter(htmlSnippet, response.Filter, response.ContentEncoding, Context.Request != null ? Context.Request.RawUrl : null, Logger);
             }
             catch (Exception exception)
             {

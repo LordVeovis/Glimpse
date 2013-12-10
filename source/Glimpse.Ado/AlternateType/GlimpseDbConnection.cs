@@ -51,23 +51,26 @@ namespace Glimpse.Ado.AlternateType
             TimerStrategy = timerStrategy;
         }
 
+        public override event StateChangeEventHandler StateChange
+        {
+            add
+            {
+                InnerConnection.StateChange += value;
+            }
+            remove
+            {
+                if (InnerConnection != null)
+                {
+                    InnerConnection.StateChange -= value;
+                }
+            }
+        }
+
         public DbProviderFactory InnerProviderFactory { get; set; }
 
         public DbConnection InnerConnection { get; set; }
 
         public Guid ConnectionId { get; set; }
-
-        private IMessageBroker MessageBroker
-        {
-            get { return messageBroker ?? (messageBroker = GlimpseConfiguration.GetConfiguredMessageBroker()); }
-            set { messageBroker = value; }
-        }
-
-        private IExecutionTimer TimerStrategy
-        {
-            get { return timerStrategy ?? (timerStrategy = GlimpseConfiguration.GetConfiguredTimerStrategy()()); }
-            set { timerStrategy = value; }
-        }
 
         public override string ConnectionString
         {
@@ -90,11 +93,6 @@ namespace Glimpse.Ado.AlternateType
             get { return InnerConnection.DataSource; }
         }
 
-        protected override DbProviderFactory DbProviderFactory
-        {
-            get { return InnerProviderFactory; }
-        }
-
         public override ConnectionState State
         {
             get { return InnerConnection.State; }
@@ -111,10 +109,21 @@ namespace Glimpse.Ado.AlternateType
             set { InnerConnection.Site = value; }
         }
 
-        public override event StateChangeEventHandler StateChange 
+        protected override DbProviderFactory DbProviderFactory
         {
-            add { InnerConnection.StateChange += value; }
-            remove { InnerConnection.StateChange -= value; }
+            get { return InnerProviderFactory; }
+        }
+
+        private IMessageBroker MessageBroker
+        {
+            get { return messageBroker ?? (messageBroker = GlimpseConfiguration.GetConfiguredMessageBroker()); }
+            set { messageBroker = value; }
+        }
+
+        private IExecutionTimer TimerStrategy
+        {
+            get { return timerStrategy ?? (timerStrategy = GlimpseConfiguration.GetConfiguredTimerStrategy()()); }
+            set { timerStrategy = value; }
         }
 
         public override void ChangeDatabase(string databaseName)

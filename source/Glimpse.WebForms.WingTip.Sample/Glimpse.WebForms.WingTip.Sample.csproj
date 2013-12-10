@@ -51,6 +51,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -251,6 +252,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="ErrorPage.aspx" />
+    <Content Include="FileUpload\FileUpload.aspx" />
     <Content Include="Images\accent.png" />
     <Content Include="Images\bullet.png" />
     <Content Include="Images\heroAccent.png" />
@@ -271,7 +273,7 @@
     <Content Include="Catalog\Images\Thumbs.db" />
     <Content Include="Catalog\Images\Thumbs\Thumbs.db" />
     <Content Include="Checkout\Web.config" />
-    <Content Include="Admin\Web.config" /> 
+    <Content Include="Admin\Web.config" />
     <None Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="ProductDetails.aspx" />
     <Content Include="ProductList.aspx" />
@@ -306,8 +308,15 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="ShoppingCart.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Viewstateless.aspx" />
+    <Content Include="ViewstateTests\AdRotatorControlTestData.xml" />
+    <Content Include="ViewstateTests\PopulatedControls.aspx" />
+    <Content Include="ViewstateTests\EmptyControls.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Bundle.config" />
+    <Content Include="Web.sitemap" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddToCart.aspx.cs">
@@ -424,6 +433,13 @@
     <Compile Include="ErrorPage.aspx.designer.cs">
       <DependentUpon>ErrorPage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FileUpload\FileUpload.aspx.cs">
+      <DependentUpon>FileUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FileUpload\FileUpload.aspx.designer.cs">
+      <DependentUpon>FileUpload.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -467,6 +483,27 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
+    <Compile Include="Viewstateless.aspx.cs">
+      <DependentUpon>Viewstateless.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Viewstateless.aspx.designer.cs">
+      <DependentUpon>Viewstateless.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewstateTests\PopulatedControls.aspx.cs">
+      <DependentUpon>PopulatedControls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewstateTests\PopulatedControls.aspx.designer.cs">
+      <DependentUpon>PopulatedControls.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ViewstateTests\EmptyControls.aspx.cs">
+      <DependentUpon>EmptyControls.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ViewstateTests\EmptyControls.aspx.designer.cs">
+      <DependentUpon>EmptyControls.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -484,14 +521,29 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Glimpse.AspNet\Glimpse.AspNet.csproj">
-      <Project>{fddfc8a6-cddf-4bc6-9f07-e76050e1eee7}</Project>
-      <Name>Glimpse.AspNet</Name>
+    <ProjectReference Include="..\Glimpse.Ado.Net45\Glimpse.Ado.Net45.csproj">
+      <Project>{1594add8-62f8-417b-bd69-131afbbf51bc}</Project>
+      <Name>Glimpse.Ado.Net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glimpse.Core\Glimpse.Core.csproj">
-      <Project>{c1289ce8-3259-41d9-893e-7a4e6f772d30}</Project>
-      <Name>Glimpse.Core</Name>
+    <ProjectReference Include="..\Glimpse.AspNet.Net45\Glimpse.AspNet.Net45.csproj">
+      <Project>{dd576747-cd93-43f0-8648-6cdc5cd9c548}</Project>
+      <Name>Glimpse.AspNet.Net45</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glimpse.Core.Net45\Glimpse.Core.Net45.csproj">
+      <Project>{2cb2400f-bc66-4074-b6e4-177a6f78163e}</Project>
+      <Name>Glimpse.Core.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glimpse.EF5.Net45\Glimpse.EF5.Net45.csproj">
+      <Project>{9a9ddfc7-b342-4e2e-99d6-2657ab8e3627}</Project>
+      <Name>Glimpse.EF5.Net45</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glimpse.WebForms.Net45\Glimpse.WebForms.Net45.csproj">
+      <Project>{dd576747-cd93-43f0-8648-6cdc5cd9c555}</Project>
+      <Name>Glimpse.WebForms.Net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ViewstateTests\App_LocalResources\PopulatedControls.aspx.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\tools\WebApplicationsBuild\Microsoft.WebApplication.targets" />
@@ -500,11 +552,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>44444</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:53417/</IISUrl>
+          <IISUrl>http://localhost:55555/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
