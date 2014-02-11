@@ -95,7 +95,12 @@ var glimpse = glimpse || {};
 
 // glimpse.pubsub.js
 glimpse.pubsub = (function() {
-    var messages = {},
+    var debug = {
+            level: 0,
+            logCaller: function(subscriber, message, data, level) { },
+            logPublish: function(message, data, level) { }
+        }, 
+        messages = {},
         lastUid = -1,
         throwException = function(ex) {
             return function() {
@@ -103,7 +108,8 @@ glimpse.pubsub = (function() {
             };
         },
         callSubscriber = function(subscriber, message, data) {
-            try { 
+            try {
+                debug.logCaller(subscriber, message, data, debug.level);
                 subscriber(data, message);
             } catch(ex) {
                 setTimeout(throwException(ex), 0);
@@ -123,6 +129,7 @@ glimpse.pubsub = (function() {
         },
         createDeliveryFunction = function(message, data) {
             return function() {
+                
                 var topic = String(message),
                     position = topic.lastIndexOf('.');
 
@@ -135,6 +142,8 @@ glimpse.pubsub = (function() {
                     position = topic.lastIndexOf('.');
                     deliverMessage(message, topic, data);
                 }
+                
+                debug.level--; 
             };
         },
         messageHasSubscribers = function(message) {
@@ -153,10 +162,14 @@ glimpse.pubsub = (function() {
         publish = function(message, data, sync) {
             var deliver = createDeliveryFunction(message, data),
                 hasSubscribers = messageHasSubscribers(message);
-
+             
+            debug.logPublish(message, data, debug.level);
+            
             if (!hasSubscribers) {
                 return false;
             }
+
+            debug.level++; 
 
             if (sync === true) {
                 deliver();
@@ -167,6 +180,7 @@ glimpse.pubsub = (function() {
         };
 
     return {
+        _debug: debug,
         publishAsync: function(message, data) {
             return publish(message, data, false);
         },
@@ -304,6 +318,10 @@ glimpse.util = (function($) {
             if (uri.indexOf('://') > -1)
                 uri = uri.split('://')[1];
             return uri.split('/')[0];
+        },
+        isLocalUri: function(uri) {
+            return uri && (!(uri.indexOf('http://') == 0 || uri.indexOf('https://') == 0 || uri.indexOf('//') == 0) || 
+                    (uri.substring(uri.indexOf('//') + 2, uri.length) + '/').indexOf(window.location.host + '/') == 0);
         },
         sortTabs: function (data) {
             var sorted = {},
@@ -733,8 +751,8 @@ glimpse.render.engine = (function($, pubsub) {
         register = function(name, engine) {
             providers[name] = engine;
         },
-        build = function(data, metadata) {
-            return providers.master.build(data, 0, true, metadata, 1);
+        build = function(data, metadata, level, forceFull) {
+            return providers.master.build(data, level || 0, (forceFull == undefined ? true : forceFull), metadata, 1);
         },
         insert = function(scope, data, metadata) {
             scope.html(build(data, metadata)); 
@@ -764,8 +782,8 @@ glimpse.render.engine.util = (function($) {
         keyMetadata: function (key, metadata) {
             return metadata && metadata.layout === Object(metadata.layout) ? metadata.layout[key] : null;
         },
-        includeHeading: function(metadata) {
-            return !(metadata && metadata.suppressHeader);
+        includeHeading: function(metadata) { 
+            return !metadata || metadata.suppressHeader != true;
         },
         shouldUsePreview: function(length, level, forceFull, limit, forceLimit, tolerance) {
             if ($.isNumeric(forceLimit))
@@ -848,7 +866,7 @@ glimpse.render.engine.util.table = (function($, util) {
     var factories = {
             array: {
                 isHandled: function (data) {
-                    var valid = true;
+                    var valid = data.length > 0;
                     for (var i = 0; i < data.length; i++) {
                         if (!$.isArray(data[i])) {
                             valid = false;
@@ -875,7 +893,7 @@ glimpse.render.engine.util.table = (function($, util) {
             },
             object: {
                 isHandled: function (data) {
-                    var valid = true;
+                    var valid = data.length > 0;
                     for (var i = 0; i < data.length; i++) {
                         if ($.isArray(data[i]) || data[i] !== Object(data[i])) {
                             valid = false;
@@ -2550,7 +2568,7 @@ glimpse.tab = (function($, pubsub, data) {
     XMLHttpRequest.prototype.open = function(method, uri) { 
         open.apply(this, arguments);
           
-        if (uri && (!(uri.indexOf('http://') == 0 || uri.indexOf('https://') == 0 || uri.indexOf('//') == 0) || (uri.substring(uri.indexOf('//') + 2, uri.length) + '/').indexOf(window.location.host + '/') == 0)) {
+        if (util.isLocalUri(uri)) {
             this.setRequestHeader("Glimpse-Parent-RequestID", data.baseData().requestId);
 
             pubsub.publish('trigger.ajax.request.send');
@@ -3908,10 +3926,9 @@ glimpse.tab = (function($, pubsub, data) {
                             stack.push(row);
                         },
                         postRender = function() {
-                            var open = XMLHttpRequest.prototype.open;
-                        
-                            XMLHttpRequest.prototype.open = function(method, uri, async, user, pass) {
-                                if (uri.indexOf('Glimpse.axd') === -1) {
+                            var open = XMLHttpRequest.prototype.open; 
+                            XMLHttpRequest.prototype.open = function(method, uri) {
+                                if (util.isLocalUri(uri) && uri.indexOf('Glimpse.axd') == -1) {
                                     var startTime = new Date().getTime(); 
                                     this.addEventListener("readystatechange", function() {
                                             if (this.readyState == 4 && this.getResponseHeader("Glimpse-RequestID"))  { 
@@ -3981,5 +3998,8 @@ null],[PR.PR_LITERAL,/^[+-]?(?:0x[\da-f]+|(?:(?:\.\d+|\d+(?:\.\d*)?)(?:e[+\-]?\d
 }(jQueryGlimpse, glimpse.pubsub));
 
 
-if (!glimpse.suppressStart)
-    glimpse.pubsub.publish('trigger.system.start');
+if (glimpse.extensions) {
+    for (var i = 0; i < glimpse.extensions.length; i++)
+        glimpse.extensions[i]();
+}
+glimpse.pubsub.publish('trigger.system.start');
