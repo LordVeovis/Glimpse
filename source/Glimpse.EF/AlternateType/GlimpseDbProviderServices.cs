@@ -1,6 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Data.Common;
+using System.Reflection;
 #if EF43 || EF5
-    using System.Data.Common;
     using System.Data.Common.CommandTrees;
     using System.Data.Metadata.Edm;  
 #else
@@ -20,9 +21,16 @@ namespace Glimpse.EF.AlternateType
 {
     internal class GlimpseDbProviderServices : DbProviderServices
     {
+#if (EF5 && NET45) || EF6
+        private readonly MethodInfo setParameterValueMethod;
+#endif
         public GlimpseDbProviderServices(DbProviderServices innerProviderServices)
         {
             InnerProviderServices = innerProviderServices;
+
+#if (EF5 && NET45) || EF6
+            setParameterValueMethod = InnerProviderServices.GetType().GetMethod("SetParameterValue", BindingFlags.NonPublic | BindingFlags.Instance);
+#endif
         }
 
         private DbProviderServices InnerProviderServices { get; set; }
@@ -76,8 +84,25 @@ namespace Glimpse.EF.AlternateType
                 fromReader = typedReader.InnerDataReader;
             }
 
-            return InnerProviderServices.GetSpatialDataReader(fromReader, manifestToken); 
+            return InnerProviderServices.GetSpatialDataReader(fromReader, manifestToken);
         }
+#endif
+
+#if (EF5 && NET45) || EF6
+        // SetParameterValue is internal and am unable to call it on the InnerProviderServices from here. 
+        // This breaks the provider wrapper when making spatial queries in EF 6.0.1
+        // http://stackoverflow.com/questions/19966106/spatial-datareader-and-wrapping-providers-in-ef6  
+        protected override void SetDbParameterValue(DbParameter parameter, TypeUsage parameterType, object value)
+        { 
+            setParameterValueMethod.Invoke(InnerProviderServices, new[] { parameter, parameterType, value });
+        }
+#endif
+
+#if EF7Plus
+        protected override void SetDbParameterValue(DbParameter parameter, TypeUsage parameterType, object value)
+        {
+            InnerProviderServices.SetParameterValue(parameter, parameterType, value);
+        } 
 #endif
     }
 }
